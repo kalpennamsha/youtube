@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Video Player</title>
+</head>
+<body>
+   <div>
+        <input type="text" id="videoUrl" placeholder="Enter YouTube video URL">
+        <button onclick="loadVideo()">Load Video</button>
+        <button onclick="cancelVideo()">Cancel Video</button>
+        <button onclick="startVideo()"> playVideo</button>
+        <button onclick="pauseVideo()"> pauseVideo</button>
+        <input id="YouTube-player-volume" type="range" value="0" min="0" max="100" onchange="volumeChange(this.value);">
+        <label for="YouTube-player-volume">Volume</label>
+    </div> 
+  
+     <div id="video"></div>
+
+  <script>
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/player_api";
+    var control = document.getElementsByTagName('script')[0];
+    control.parentNode.insertBefore(tag, control);
+
+    var player;
+
+    function onYouTubePlayerAPIReady() {
+    }
+
+    function loadVideo() {
+      var videoUrl = document.getElementById('videoUrl').value;
+      var videoId = getYouTubeVideoId(videoUrl);
+
+      if (videoId) {
+        if (player) {
+          player.loadVideoById(videoId);
+        } else {
+          player = new YT.Player('video', {
+            height: '360',
+            width: '640',
+            videoId: videoId,
+            playerVars: {
+              autoplay: 1,
+              controls: 1
+            }
+          });
+        }
+      } else {
+        alert('Invalid YouTube video URL. Please enter a valid URL.');
+      }
+    }
+
+    function cancelVideo() {
+      if (player) {
+        player.stopVideo();
+      }
+    }
+
+    function startVideo(){
+        if(player){
+            player.playVideo();
+        }
+    }
+
+    function pauseVideo(){
+        if(player){
+            player.pauseVideo();
+        }
+    }
+
+    function volumeChange(volume) {
+    if (player) {
+      player.setVolume(volume);
+      }
+   }
+
+    function getYouTubeVideoId(url) {
+    
+      var videoIdMatch = url.match(/[?&]v=([^?&]+)/);
+      return videoIdMatch ? videoIdMatch[1] : null;
+    }
+  </script>
+
+</body>
+</html>
